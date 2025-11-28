@@ -157,6 +157,8 @@ public class PerhitunganFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUmurActionPerformed
 
     private void btnHitungActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHitungActionPerformed
+    LocalDate ulangTahunBerikutnya = null;
+        
     Date tanggalLahir = dateChooserTanggalLahir.getDate(); 
 
     if (tanggalLahir != null) { 
@@ -166,7 +168,7 @@ public class PerhitunganFrame extends javax.swing.JFrame {
         String umur = helper.hitungUmurDetail(lahir, sekarang); 
         txtUmur.setText(umur); 
          
-        LocalDate ulangTahunBerikutnya = helper.hariUlangTahunBerikutnya(lahir, sekarang); 
+        ulangTahunBerikutnya = helper.hariUlangTahunBerikutnya(lahir, sekarang); 
         String hariUlangTahunBerikutnya = helper.getDayOfWeekInIndonesian(ulangTahunBerikutnya); 
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy"); 
@@ -183,13 +185,15 @@ public class PerhitunganFrame extends javax.swing.JFrame {
  
     // Reset flag untuk thread baru 
         stopFetching = false; 
+        
+        final LocalDate ulangTahunBerikutnyaFinal = ulangTahunBerikutnya;
  
     // Mendapatkan peristiwa penting secara asinkron 
         peristiwaThread = new Thread(() -> { 
             try { 
                 txtAreaPeristiwa.setText("Tunggu, sedang mengambil data...\n"); 
-            helper.getPeristiwaBarisPerBaris(ulangTahunBerikutnya, 
-            txtAreaPeristiwa, () -> stopFetching); 
+            helper.getPeristiwaBarisPerBaris(ulangTahunBerikutnyaFinal, 
+                    txtAreaPeristiwa, () -> stopFetching); 
             if (!stopFetching) { 
             javax.swing.SwingUtilities.invokeLater(() -> 
             txtAreaPeristiwa.append("Selesai mengambil data peristiwa")); 
